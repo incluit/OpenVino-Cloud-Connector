@@ -9,7 +9,7 @@
 :toclevels: 6
 :toc-title: Table of Contents
 
-https://travis-ci.org/github/incluit/OpenVino-Cloud-Connector[image:https://travis-ci.org/github/incluit/OpenVino-Cloud-Connector.svg?branch=master[Build
+https://travis-ci.org/incluit/OpenVino-Cloud-Connector[image:https://travis-ci.org/incluit/OpenVino-Cloud-Connector.svg?branch=master[Build
 Status]]
 https://sonarcloud.io/dashboard?id=incluit_OpenVino-Cloud-Connector[image:https://sonarcloud.io/api/project_badges/measure?project=incluit_OpenVino-Cloud-Connector&metric=alert_status[Sonarcloud
 Status]]
