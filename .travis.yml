@@ -13,9 +13,10 @@ jobs:
            - sudo apt-get update
            - make docker-build
            - make docker-run
+           - docker exec docker-cloud-connector bash -c 'cd /app && curl -s -L https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.2.0.1873-linux.zip -o sonarscanner.zip && unzip -qq sonarscanner.zip && export PATH=$PATH:sonar-scanner-4.2.0.1873-linux/bin/ && curl -s "https://get.sdkman.io" | bash && source /root/.sdkman/bin/sdkman-init.sh && sdk install java && sonar-scanner -Dsonar.organization=incluit -Dsonar.projectKey=incluit_OpenVino-Cloud-Connector -Dsonar.sources=. -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=0ffdb38553a38e0d8ba718b819ad420907cee897'
            - docker ps -a
            - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-           - docker tag docker-zmq-pub  openvinoincluit/cloudconnector:latest
+           - docker tag zmq-cloud-connector  openvinoincluit/cloudconnector:latest
            - docker push openvinoincluit/cloudconnector:latest
            - make docker-stop
            - make docker-remove
