@@ -1,1 +1,0 @@
-# OpenVino-Cloud-Connector
