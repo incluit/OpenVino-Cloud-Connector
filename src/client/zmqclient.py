@@ -8,7 +8,7 @@ import os
 HOST = '127.0.0.1'
 PORT = '4444'
 
-logging.basicConfig(filename='logs/subscriber.log', level=logging.INFO)
+logging.basicConfig(filename='../../logs/subscriber.log', level=logging.INFO)
 
 
 class ZClient(object):
@@ -33,6 +33,19 @@ class ZClient(object):
             logging.info(
                 '{}   - {}'.format(message, time.strftime("%Y-%m-%d %H:%M")))
 
+
+    def follow(thefile):
+        thefile.seek(0,2) # Go to the end of the file
+        while True:
+            line = thefile.readline()
+            if not line:
+                time.sleep(0.1) # Sleep briefly
+                continue
+            yield line
+            print (line + ' Se copio!!!')
+
+
 if __name__ == '__main__':
     zs = ZClient()
     zs.receive_message()
+    zs.follow('../../logs/subscriber.log')

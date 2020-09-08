@@ -9,8 +9,11 @@ RUN apt-get install -y --no-install-recommends \
         sudo
 
 RUN pip3 install pyzmq
-
 RUN pip3 install Flask
+RUN pip install boto3
+RUN pip install elasticsearch
+RUN pip install requests
+RUN pip install requests-aws4auth
 
 ADD . /app
 WORKDIR /app
