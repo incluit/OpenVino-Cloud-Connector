@@ -10,13 +10,16 @@ RUN apt-get install -y --no-install-recommends \
 
 RUN pip3 install pyzmq
 RUN pip3 install Flask
-RUN pip install boto3
-RUN pip install elasticsearch
-RUN pip install requests
-RUN pip install requests-aws4auth
+RUN pip3 install boto3
+RUN pip3 install elasticsearch
+RUN pip3 install requests
+RUN pip3 install requests-aws4auth
+RUN pip3 --no-cache-dir install --upgrade awscli
 
 ADD . /app
 WORKDIR /app
+
+COPY aws/ /root/.aws
 
 RUN ["chmod", "+x", "scripts/process.sh"]
 
