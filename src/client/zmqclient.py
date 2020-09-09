@@ -8,7 +8,7 @@ import os
 HOST = '127.0.0.1'
 PORT = '4444'
 
-logging.basicConfig(filename='../../logs/subscriber.log', level=logging.INFO)
+logging.basicConfig(filename='logs/subscriber.log', level=logging.INFO)
 
 class ZClient(object):
 
