@@ -19,8 +19,6 @@ RUN pip3 --no-cache-dir install --upgrade awscli
 ADD . /app
 WORKDIR /app
 
-COPY aws/ /root/.aws
-
 RUN ["chmod", "+x", "scripts/process.sh"]
 
 CMD ["scripts/process.sh"]
