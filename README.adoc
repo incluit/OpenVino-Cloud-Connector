@@ -120,7 +120,7 @@ docker pull openvinoincluit/cloudconnector
 === Run With Docker
 
 ----
-docker run -d --name docker-pub-server --network host -t docker-zmq-pub
+make docker-run
 ----
 
 === Put Messages in the QUEUE
