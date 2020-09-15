@@ -1,4 +1,6 @@
 # client.py
+from datetime import datetime
+
 import zmq
 import sys
 import time
@@ -62,9 +64,12 @@ class Esearch(object):
             connection_class=RequestsHttpConnection
         )
 
+        date_time_str = l[1] + ' ' + l[2]
+        date_time_obj = datetime.datetime.strptime(date_time_str, '%Y-%m-%d %H:%M:%S.%f')
+
         document = {
             "service": l[0],
-            "date": l[1],
+            "date": date_time_obj,
             "time": l[2],
             "camera": l[3],
             "event": l[4],
