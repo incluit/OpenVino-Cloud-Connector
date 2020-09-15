@@ -65,7 +65,7 @@ class Esearch(object):
         )
 
         date_time_str = l[1] + ' ' + l[2]
-        date_time_obj = datetime.strptime(date_time_str, '%Y-%m-%d %H:%M:%S.%f')
+        date_time_obj = datetime.strptime(date_time_str, '%d-%m-%Y %H:%M:%S')
 
         document = {
             "service": l[0],
