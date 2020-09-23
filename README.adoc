@@ -43,30 +43,6 @@ At this point you only need to ensure that you have an OS running with Python an
 
 == Building
 
-=== Basic Build
-
-**1.** Clone the repository at desired location:
-
-[source,bash]
-----
-git clone git@github.com:incluit/OpenVino-Cloud-Connector.git
-----
-
-**2.** Change to Main Folder of this Project:
-
-[source,bash]
-----
-cd OpenVino-Cloud-Connector
-----
-
-**3.** Runs the following scripts:
-
-[source,bash]
-----
-# Start the client process
-python /app/src/client/zmqclient.py
-----
-
 === Build with Docker
 
 ==== Prerequisites
@@ -102,41 +78,34 @@ cd OpenVino-Cloud-Connector
 [source,bash]
 ----
 make docker-build
-----
-
-=== Build in DockerHub
-The master brach of this repository is built in Docker Hub:
-
-https://hub.docker.com/r/openvinoincluit/cloudconnector
-
-You can pull the Alert-Manager Docker image using:
-
-----
-docker pull openvinoincluit/cloudconnector
+make docker-run
 ----
 
 == Usage
 
-=== Run With Docker
-
-----
-make docker-run
-----
-
 === Put Messages in the QUEUE
+
+For verifying how the CloudConnector receives event messages it will be mandatory that the user have the Alert-Manager Microservice up and running on the same machinne.
+For installing and initiating Alert Manager Microservice, check the following link: https://github.com/incluit/OpenVino-Alert-Manager
+
+**1.** For sending simulated events to the Alert Manager, open a browser and paste the following url:
 ----
-Only with Alert-Manager Microservice Running on the same machinne.
-
-http://localhost:5000/piq/?param="Message to put in the QUEUE"
+http://localhost:5000/piq/?param=[Message to put in the QUEUE]
 ----
 
-== Docker Options
+Also, you can send the event message through console terminal as follows:
+----
+culr http://localhost:5000/piq/?param=MessageToPutInTheQUEUE
+----
 
-* View logs file inside Container (Only Linux System)
+**2.** For verifying all sent messages check the log file inside Container (Only Linux System) by executing the following command:
 [source,bash]
 ----
 docker exec -it docker-cloud-connector cat /app/logs/subscriber.log
 ----
+
+
+== Docker Options
 
 * Stop the docker container
 [source,bash]
