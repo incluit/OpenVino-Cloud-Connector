@@ -27,12 +27,15 @@ class ZClient(object):
         self._subscriber.connect('tcp://{}:{}'.format(self.host, self.port))
         self._subscriber.setsockopt(zmq.SUBSCRIBE, b"")
 
+        print('listening on tcp://{}:{}'.format(self.host, self.port))
         while True:
-            print('listening on tcp://{}:{}'.format(self.host, self.port))
-            message = self._subscriber.recv().decode("utf-8")
+            try:
+                message = self._subscriber.recv().decode("utf-8", "ignore")
+            except UnicodeDecodeError:
+                print("UnicodeDecodeError: the message has been lost.")
+                continue
             print(message)
-            logging.info(
-                '{}   - {}'.format(message, time.strftime("%Y-%m-%d %H:%M")))
+            logging.info('{}   - {}'.format(message, time.strftime("%Y-%m-%d %H:%M")))
             count +=1
             Esearch().hit_kibana(message, count)
 
@@ -51,6 +54,10 @@ class Esearch(object):
     def hit_kibana(message, count):
         service = 'es'
         credentials = boto3.Session().get_credentials()
+        if credentials.access_key is None:
+            print("You need to configure the credentials.")
+            return
+            
         awsauth = AWS4Auth(credentials.access_key, credentials.secret_key, regionaws, service,
                            session_token=credentials.token)
         l = message.split(",");
@@ -73,14 +80,15 @@ class Esearch(object):
             "time": l[2],
             "camera": l[3],
             "event": l[4],
-            "precision": l[5]
+            "precision": l[5],
+            "dr_mode": l[6]
         }
 
         count +=1
 
         es.index(index="alerts", doc_type="_doc", id=count, body=document)
 
-        print(es.get(index="alerts", doc_type="_doc", id=count))
+        #print(es.get(index="alerts", doc_type="_doc", id=count))
 
 
 if __name__ == '__main__':
