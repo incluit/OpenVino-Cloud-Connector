@@ -1,5 +1,0 @@
-add_subdirectory(lib)
-add_subdirectory(wjreader)
-add_subdirectory(wjwriter)
-add_subdirectory(wjelement)
-add_subdirectory(cli)

@@ -33,16 +33,16 @@
 #include <eis/utils/json_config.h>
 #include "eis/msgbus/msgbus.h"
 
-#define TOPIC "publish_test"
+#define TOPIC "BLAS"
 #define SERVICE_NAME "sub-thread-example"
 
 using namespace eis::utils;
 using namespace eis::msgbus;
-
+using namespace std;
 // Globals
 std::atomic<bool> g_stop;
 
-**
+/**
  * Example object which is both serializable and deserialzable
  */
 class ExampleMessage : public Serializable {
@@ -90,7 +90,7 @@ public:
     };
 
     /**
-     * Destructur
+     * Destructor
      */
     ~ExampleMessage() {
         delete[] m_message;
@@ -206,6 +206,7 @@ int main(int argc, char** argv) {
         if(output_queue->wait_for(timeout)) {
             LOG_INFO_0("Received message");
             ExampleMessage* received = (ExampleMessage*) output_queue->front();
+            LOG_INFO("Received: %s", received->get_message());
             output_queue->pop();
             delete received;
         }

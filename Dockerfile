@@ -9,6 +9,7 @@ RUN apt-get install -y --no-install-recommends \
         sudo \
         wget \
         gcc \
+        git \
         vim
 
 #CMAKE to install EIS message bus 
@@ -33,8 +34,6 @@ ADD . /app
 WORKDIR /app/src/common/
 RUN bash /app/src/common/eis_libs_installer.sh
 ENV LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib/
-WORKDIR /app/src/common/libs/EISMessageBus/python/
-RUN python3 /app/src/common/libs/EISMessageBus/python/setup.py install
 # --------------
 
 
