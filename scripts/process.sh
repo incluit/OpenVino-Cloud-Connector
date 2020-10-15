@@ -4,4 +4,4 @@
 set -m
 
 # Start the client process
-python /app/src/client/zmqclient.py
+python /app/src/client/msgBusClient.py

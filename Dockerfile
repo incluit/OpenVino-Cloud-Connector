@@ -41,4 +41,4 @@ WORKDIR /app
 
 RUN ["chmod", "+x", "scripts/process.sh"]
 
-CMD ["bash"]
+CMD ["scripts/process.sh"]

@@ -1,44 +1,14 @@
 # client.py
 from datetime import datetime
 
-import zmq
 import sys
 import time
 import logging
 import os
-
-HOST = '127.0.0.1'
-PORT = '4444'
-
-logging.basicConfig(filename='logs/subscriber.log', level=logging.INFO)
-
-class ZClient(object):
-
-    def __init__(self, host=HOST, port=PORT):
-        """Initialize Worker"""
-        self.host = host
-        self.port = port
-        self._context = zmq.Context()
-        self._subscriber = self._context.socket(zmq.SUB)
-        print("Client Initiated")
-
-    def receive_message(self,count = 1):
-        """Start receiving messages"""
-        self._subscriber.connect('tcp://{}:{}'.format(self.host, self.port))
-        self._subscriber.setsockopt(zmq.SUBSCRIBE, b"")
-
-        print('listening on tcp://{}:{}'.format(self.host, self.port))
-        while True:
-            try:
-                message = self._subscriber.recv().decode("utf-8", "ignore")
-            except UnicodeDecodeError:
-                print("UnicodeDecodeError: the message has been lost.")
-                continue
-            print(message)
-            logging.info('{}   - {}'.format(message, time.strftime("%Y-%m-%d %H:%M")))
-            count +=1
-            Esearch().hit_kibana(message, count)
-
+import time
+import json
+import argparse
+import eis.msgbus as mb
 
 from elasticsearch import Elasticsearch, RequestsHttpConnection
 from requests_aws4auth import AWS4Auth
@@ -46,18 +16,19 @@ import boto3
 
 regionaws = 'us-east-1'  # e.g. us-west-1
 hostaws = 'search-driver-management-2lzumo4geewhdzwcxsqnoacrmy.us-east-1.es.amazonaws.com'  # For example, my-test-domain.us-east-1.es.amazonaws.com
-
+msgbus = None
+subscriber = None
+count = 1
+credentials = boto3.Session().get_credentials()
 
 class Esearch(object):
 
     @staticmethod
     def hit_kibana(message, count):
         service = 'es'
-        credentials = boto3.Session().get_credentials()
-        if credentials.access_key is None:
+        if credentials is None or credentials.access_key is None:
             print("You need to configure the credentials.")
             return
-            
         awsauth = AWS4Auth(credentials.access_key, credentials.secret_key, regionaws, service,
                            session_token=credentials.token)
         l = message.split(",");
@@ -88,9 +59,39 @@ class Esearch(object):
 
         es.index(index="alerts", doc_type="_doc", id=count, body=document)
 
-        #print(es.get(index="alerts", doc_type="_doc", id=count))
+# Argument parsing
+ap = argparse.ArgumentParser()
+ap.add_argument('config', help='JSON configuration')
+ap.add_argument('-t', '--topic', default='BLAS', help='Topic')
+ap.add_argument('-p', '--print', default=False, action='store_true',
+                help='Print the received message')
+args = ap.parse_args()
 
+with open(args.config, 'r') as f:
+    config = json.load(f)
 
-if __name__ == '__main__':
-    zs = ZClient()
-    zs.receive_message()
+try:
+    print('[INFO] Initializing message bus context')
+    msgbus = mb.MsgbusContext(config)
+
+    print(f'[INFO] Initializing subscriber for topic \'{args.topic}\'')
+    subscriber = msgbus.new_subscriber(args.topic)
+
+    print('[INFO] Running...')
+    while True:
+        msg = subscriber.recv()
+        meta_data, blob = msg
+        if meta_data is not None:
+            if args.print:
+                payload = msg.get_name()+","+meta_data["message"]
+                print(f'[INFO] RECEIVED: message: {payload}')
+                logging.info('{}   - {}'.format(payload, time.strftime("%Y-%m-%d %H:%M")))
+                count +=1
+                if len(payload.split(",")) == 7:
+                    Esearch().hit_kibana(payload, count)
+
+except KeyboardInterrupt:
+    print('[INFO] Quitting...')
+finally:
+    if subscriber is not None:
+        subscriber.close()
