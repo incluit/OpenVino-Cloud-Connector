@@ -14,6 +14,7 @@ from elasticsearch import Elasticsearch, RequestsHttpConnection
 from requests_aws4auth import AWS4Auth
 import boto3
 
+logging.basicConfig(filename='logs/subscriber.log', level=logging.INFO)
 regionaws = 'us-east-1'  # e.g. us-west-1
 hostaws = 'search-driver-management-2lzumo4geewhdzwcxsqnoacrmy.us-east-1.es.amazonaws.com'  # For example, my-test-domain.us-east-1.es.amazonaws.com
 msgbus = None
