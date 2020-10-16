@@ -4,4 +4,4 @@
 set -m
 
 # Start the client process
-python /app/src/client/msgBusClient.py
+python3 /app/src/client/msgBusClient.py /app/src/client/configs/tcp_subscriber_no_security.json --print
