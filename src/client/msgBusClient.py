@@ -14,6 +14,8 @@ from elasticsearch import Elasticsearch, RequestsHttpConnection
 from requests_aws4auth import AWS4Auth
 import boto3
 
+CONST_PAYLOAD_SIZE = 7;
+
 logging.basicConfig(filename='logs/subscriber.log', level=logging.INFO)
 regionaws = 'us-east-1'  # e.g. us-west-1
 hostaws = 'search-driver-management-2lzumo4geewhdzwcxsqnoacrmy.us-east-1.es.amazonaws.com'  # For example, my-test-domain.us-east-1.es.amazonaws.com
@@ -88,7 +90,7 @@ try:
                 print(f'[INFO] RECEIVED: message: {payload}')
                 logging.info('{}   - {}'.format(payload, time.strftime("%Y-%m-%d %H:%M")))
                 count +=1
-                if len(payload.split(",")) == 7:
+                if len(payload.split(",")) == CONST_PAYLOAD_SIZE :
                     Esearch().hit_kibana(payload, count)
 
 except KeyboardInterrupt:
